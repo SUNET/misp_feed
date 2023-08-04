@@ -47,7 +47,7 @@ async def get_manifest(request: Request) -> Response:
     if manifest_data is None:
         return Response(status_code=500, content='{"detail":"Internal server error"}', media_type="application/json")
 
-    return JSONResponse(status_code=200, content=manifest_data)
+    return JSONResponse(status_code=200, content=json.loads(manifest_data))
 
 
 @app.get("/hashes.csv")
