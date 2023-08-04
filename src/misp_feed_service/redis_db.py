@@ -1,28 +1,35 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
-import redis
-
-# from redis.asyncio.client import Redis as RedisClient
-from redis.asyncio import Redis
+from redis.asyncio.client import Redis
 
 from . import settings
 
 
-async def redis_connection() -> redis.asyncio.client.Redis[str]:
+async def redis_connection() -> Redis[str]:
     """Get a redis connection"""
 
-    conn = Redis[str](
-        host=settings.host,
-        port=settings.port,
-        db=settings.db,
-        decode_responses=True,
-        socket_connect_timeout=3,
-        socket_timeout=3,
-    )
+    if TYPE_CHECKING:
+        conn = Redis[str](
+            host=settings.host,
+            port=settings.port,
+            db=settings.db,
+            decode_responses=True,
+            socket_connect_timeout=3,
+            socket_timeout=3,
+        )
+    else:
+        conn = Redis(
+            host=settings.host,
+            port=settings.port,
+            db=settings.db,
+            decode_responses=True,
+            socket_connect_timeout=3,
+            socket_timeout=3,
+        )
 
-    if isinstance(conn, redis.asyncio.client.Redis) and (await conn.ping()):
+    if isinstance(conn, Redis) and (await conn.ping()):
         return conn
 
     raise ValueError("ERROR: Problem with data from redis")
