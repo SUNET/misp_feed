@@ -2,6 +2,7 @@
 import asyncio
 import json
 import os
+import sys
 import time
 from typing import Dict, Union
 
@@ -13,6 +14,10 @@ from requests.exceptions import ConnectionError as requestsConnectionError
 
 from .redis_db import event_endpoint_data, hashes_endpoint_data, manifest_endpoint_data
 from .service import generate_feed_event, update_feed
+
+if "MISP_FEED_API_KEY" not in os.environ or len(os.environ["MISP_FEED_API_KEY"]) < 3 :
+    print("ERROR: Missing MISP_FEED_API_KEY in environment")
+    sys.exit(1)
 
 MISP_FEED_API_KEY = os.environ["MISP_FEED_API_KEY"]
 
