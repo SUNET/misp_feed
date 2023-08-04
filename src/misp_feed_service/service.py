@@ -173,7 +173,7 @@ async def update_feed() -> None:
     # Run forever
     while True:
         try:
-            req = requests.get(os.environ["C2_API_URL"], headers=headers, timeout=20)
+            req = requests.get(os.environ["C2_API_URL"], headers=headers, timeout=60)
         except requestsConnectionError:
             await asyncio.sleep(60 * 60 * 2)
             print("Failed to connect to C2 API server")
