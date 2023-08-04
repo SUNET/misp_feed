@@ -1,0 +1,6 @@
+uvicorn[standard]
+fastapi
+redis
+pymisp
+requests
+cryptography

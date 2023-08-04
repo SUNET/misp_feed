@@ -1,0 +1,60 @@
+description = "SUNET C2 MISP feed"
+version = "0.92"
+
+[build-system]
+requires = [
+    "flit_core >=2.0",
+]
+
+[tool.flit.metadata]
+module = "misp_feed_service"
+
+description-file = "README.md"
+requires-python = ">=3.8"
+
+keywords = "misp,feed,c2"
+license = "MIT"
+author = "Victor Näslund"
+author-email = "victor@sunet.se"
+home-page = "https://github.com/SUNET/misp_feed"
+
+requires = [
+    "uvicorn[standard]",
+    "fastapi",
+    "cryptography",
+    "requests",
+    "pymisp"
+]
+
+
+[tool.mypy]
+strict = true
+mypy_path = "src"
+packages = "misp_feed_service"
+
+# [[tool.mypy.overrides]]
+# module = [
+#     "asn1crypto",
+#     "asn1crypto.keys",
+#     "asyncpg",
+#     "asyncpg.pool",
+#     "asyncpg.exceptions",
+#     "pkcs11.exceptions",
+# ]
+ignore_missing_imports = true
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.black]
+line-length = 120
+
+[tool.pylint.'FORMAT']
+max-line-length = 120
+
+[tool.pylint.'MASTER']
+extension-pkg-whitelist = "pydantic"
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = "duplicate-code,too-many-lines"

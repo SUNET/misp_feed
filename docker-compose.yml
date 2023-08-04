@@ -1,0 +1,42 @@
+version: "3.3"
+# Require docker-compose version 1.29
+# version: "3.9"
+services:
+  server:
+    build:
+      context: .
+    #  dockerfile: ./Dockerfile
+    ports:
+      - "8008:8008"
+    depends_on:
+      - "redis"
+    restart: always
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    # Require docker-compose version 1.29 and version: "3.3" in this file at the top
+    # mem_limit: "512m"
+    # mem_reservation: "128m"
+    # cpus: "1.75"
+    tmpfs:
+      - /dev/shm:ro,noexec,nosuid,nodev
+    environment:
+      - C2_API_KEY=${C2_API_KEY}
+      - C2_API_URL=${C2_API_URL}
+      - MISP_FEED_API_KEY=${MISP_FEED_API_KEY}
+  redis:
+    image: redis:7.0.12-bookworm@sha256:6e30a37f91041a24ed52fce0c1330bb11b867ecf0f154168e28f9fc65898f610
+    restart: always
+    # read_only: true
+    # cap_drop: [ALL]
+    # security_opt:
+    #   - no-new-privileges:true
+    # Require docker-compose version 1.299 and version: "3.3" in this file at the top
+    # mem_limit: "1g"
+    # mem_reservation: "128m"
+    # cpus: "1.75"
+    volumes:
+      - ./data/redis:/data
+    #tmpfs:
+    #  - /dev/shm:ro,noexec,nosuid,nodev
