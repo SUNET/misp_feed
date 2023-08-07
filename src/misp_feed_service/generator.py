@@ -274,11 +274,25 @@ class FeedGenerator:
             return self.get_last_event_from_manifest()
         else:
             man_redis = json.loads(redis_manifest)
+
+            now = datetime.datetime.now()
+
             dated_events_redis = []
             for event_uuid_redis, event_json_redis in man_redis.items():
+
+                # Ensure we only keep the current daily event
+                if event_json_redis["date"] != now.strftime("%Y-%m-%d"):
+                    continue
+
                 # add events to manifest
                 self.manifest[event_uuid_redis] = event_json_redis
                 dated_events_redis.append([event_json_redis["date"], event_uuid_redis, event_json_redis["info"]])
+
+            # Create a new daily event if it does not exist
+            if not dated_events_redis:
+                self.create_daily_event()
+                return self.get_last_event_from_manifest()
+
             # Sort by date then by event name
             dated_events_redis.sort(key=lambda k_redis: (k_redis[0], k_redis[2]), reverse=True)
             return dated_events_redis[0]
