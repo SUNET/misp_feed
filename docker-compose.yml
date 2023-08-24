@@ -26,7 +26,7 @@ services:
       - C2_API_URL=${C2_API_URL}
       - MISP_FEED_API_KEY=${MISP_FEED_API_KEY}
   redis:
-    image: redis:7.0.12-bookworm@sha256:6e30a37f91041a24ed52fce0c1330bb11b867ecf0f154168e28f9fc65898f610
+    image: redis:7.2.0-bookworm@sha256:57b3ebf7bac6c5a3835299835b96759f3c3f7ebe964a96bf2c35bd88d195fbba
     restart: always
     # read_only: true
     # cap_drop: [ALL]

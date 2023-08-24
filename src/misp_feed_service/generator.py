@@ -41,7 +41,7 @@ class FeedGenerator:
 
     Configuration taken from the file settings.py"""
 
-    def __init__(self):
+    def __init__(self, old_manifest):
         """This object can be use to easily create a daily MISP-feed.
 
         It handles the event creation, manifest file and cache file
@@ -60,7 +60,7 @@ class FeedGenerator:
         self.flushing_interval = settings.flushing_interval
         self.flushing_next = time.time() + self.flushing_interval
 
-        self.manifest = {}
+        self.manifest = old_manifest
         self.attributeHashes = []
 
         self.daily_event_name = settings.daily_event_name + " {}"
@@ -279,7 +279,6 @@ class FeedGenerator:
 
             dated_events_redis = []
             for event_uuid_redis, event_json_redis in man_redis.items():
-
                 # Ensure we only keep the current daily event
                 if event_json_redis["date"] != now.strftime("%Y-%m-%d"):
                     continue

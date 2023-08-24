@@ -11,7 +11,12 @@ import requests
 from requests.exceptions import ConnectionError as requestsConnectionError
 
 from . import generator, settings
-from .redis_db import event_endpoint_data, manifest_endpoint_data, redis_save
+from .redis_db import (
+    event_endpoint_data,
+    manifest_endpoint_data,
+    redis_recreate_manifest,
+    redis_save,
+)
 
 
 async def add_context(c2_entry: Dict[str, Any]) -> str:
@@ -69,7 +74,13 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
     domain_count = 0
     ip_count = 0
 
-    feed_generator = generator.FeedGenerator()
+    manifest_data = await manifest_endpoint_data()
+    if manifest_data is None:
+        return None
+
+    manifest_json_data = json.loads(manifest_data)
+
+    feed_generator = generator.FeedGenerator(manifest_json_data)
 
     for c2_entry in c2_data:
         object_data: Dict[str, str] = {}
@@ -169,6 +180,8 @@ async def update_feed() -> None:
     """Update the event evert 60*60*2 seconds"""
 
     headers = {"API-KEY": os.environ["C2_API_KEY"]}
+
+    await redis_recreate_manifest()
 
     # Run forever
     while True:
