@@ -35,20 +35,21 @@ outputdir = "output"
 # Event meta data
 ## Required
 ### The organisation id that generated this feed
-org_name = "SUNET_C2_DEV"
+org_name = "SUNET_C2-scanner"
 ### Your organisation UUID
 org_uuid = ""
 ### The daily event name to be used in MISP.
 ### (e.g. honeypot_1, will produce each day an event of the form honeypot_1 dd-mm-yyyy)
-daily_event_name = "SUNET_C2_DEV"
+daily_event_name = "SUNET_C2_daily"
 
 ## Optional
 analysis = 2
-threat_level_id = 3
+threat_level_id = 1
 published = True
 Tag = [
     {"colour": "#fcc000", "name": "tlp:amber"},
-    {"colour": "#ff00ff", "name": "SUNET:C2:FEED"},
+    {"colour": "#ffc000", "name": 'PAP:AMBER'},
+    {"colour": "#ff5c00", "name": "SUNET:C2-scanner-feed"},
 ]
 
 from pymisp.tools import GenericObjectGenerator
