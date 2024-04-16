@@ -71,14 +71,11 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
             event = json.loads(event_data)
             current_hosts = await get_current_event_hosts(event)
 
-    domain_count = 0
-    ip_count = 0
-
     manifest_data = await manifest_endpoint_data()
     if manifest_data is None:
-        return None
-
-    manifest_json_data = json.loads(manifest_data)
+        manifest_json_data = {}
+    else:
+        manifest_json_data = json.loads(manifest_data)
 
     feed_generator = generator.FeedGenerator(manifest_json_data)
 
@@ -93,15 +90,15 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
         if last_seen < (datetime.datetime.now() - datetime.timedelta(days=1)):
             continue
 
-        if "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
-            # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
-            object_data["scheme"] = "dns"
-        elif "https://" in c2_data[c2_entry]["url"]:
+        if "https://" in c2_data[c2_entry]["url"]:
             # object_data["url"] = c2_data[c2_entry]["url"]
             object_data["scheme"] = "https"
         elif "http://" in c2_data[c2_entry]["url"]:
             # object_data["url"] = c2_data[c2_entry]["url"]
             object_data["scheme"] = "http"
+        elif "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
+            # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
+            object_data["scheme"] = "dns"
         else:
             raise ValueError(f"Unknown scheme for {c2_data}")
 
@@ -145,16 +142,9 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
         to_ids = {}
         if "ip-dst|port" in object_data:
             to_ids["ip-dst|port"] = True
-            ip_count += 1
-            if ip_count > 2:
-                continue
-
         elif "hostname|port" in object_data:
             to_ids["hostname|port"] = True
             to_ids["domain"] = False
-            domain_count += 1
-            if domain_count > 2:
-                continue
         else:
             raise ValueError("Unknown to_ids attribute")
 

@@ -58,6 +58,9 @@ async def manifest_endpoint_data() -> Optional[str]:
     if ret is None:
         return None
 
+    if isinstance(ret, str) and len(ret) == 2:
+         return None
+
     if isinstance(ret, str) and len(ret) > 3:
         return ret
 
