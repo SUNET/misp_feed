@@ -90,15 +90,15 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
         if last_seen < (datetime.datetime.now() - datetime.timedelta(days=1)):
             continue
 
-        if "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
-            # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
-            object_data["scheme"] = "dns"
-        elif "https://" in c2_data[c2_entry]["url"]:
+        if "https://" in c2_data[c2_entry]["url"]:
             # object_data["url"] = c2_data[c2_entry]["url"]
             object_data["scheme"] = "https"
         elif "http://" in c2_data[c2_entry]["url"]:
             # object_data["url"] = c2_data[c2_entry]["url"]
             object_data["scheme"] = "http"
+        elif "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
+            # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
+            object_data["scheme"] = "dns"
         else:
             raise ValueError(f"Unknown scheme for {c2_data}")
 
