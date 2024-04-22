@@ -1,11 +1,11 @@
-FROM debian:bookworm-20230814-slim@sha256:a60c0c42bc6bdc09d91cd57067fcc952b68ad62de651c4cf939c27c9f007d1c5
+FROM debian:bookworm-20240408-slim@sha256:3d5df92588469a4c503adbead0e4129ef3f88e223954011c2169073897547cac
 
-MAINTAINER victor@sunet.se
+MAINTAINER pettai@sunet.se
 
 EXPOSE 8008/tcp
 
 # Metadata
-LABEL version="1.03"
+LABEL version="1.04"
 LABEL description="misp-feed-service server"
 
 # Set work dir
