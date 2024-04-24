@@ -49,12 +49,16 @@ async def get_current_event_id() -> Optional[str]:
 
 async def get_current_event_hosts(event: Dict[str, Any]) -> Dict[str, int]:
     hosts: Dict[str, int] = {}
-    for event_object in event["Event"]["Object"]:
-        for attribute in event_object["Attribute"]:
-            if attribute["type"] == "ip-dst|port" or attribute["type"] == "hostname|port":
-                hosts[attribute["value"]] = 1
+    if event["Event"] and "Object" in event["Event"]:
+        for event_object in event["Event"]["Object"]:
+            for attribute in event_object["Attribute"]:
+                if attribute["type"] == "ip-dst|port" or attribute["type"] == "hostname|port":
+                    hosts[attribute["value"]] = 1
 
-    return hosts
+        return hosts
+
+    else:
+        return None
 
 
 async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
@@ -90,17 +94,20 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
         if last_seen < (datetime.datetime.now() - datetime.timedelta(days=1)):
             continue
 
-        if "https://" in c2_data[c2_entry]["url"]:
-            # object_data["url"] = c2_data[c2_entry]["url"]
-            object_data["scheme"] = "https"
-        elif "http://" in c2_data[c2_entry]["url"]:
-            # object_data["url"] = c2_data[c2_entry]["url"]
-            object_data["scheme"] = "http"
-        elif "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
-            # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
-            object_data["scheme"] = "dns"
-        else:
-            raise ValueError(f"Unknown scheme for {c2_data}")
+        try:
+            if "https://" in c2_data[c2_entry]["url"]:
+                # object_data["url"] = c2_data[c2_entry]["url"]
+                object_data["scheme"] = "https"
+            elif "http://" in c2_data[c2_entry]["url"]:
+                # object_data["url"] = c2_data[c2_entry]["url"]
+                object_data["scheme"] = "http"
+
+        except KeyError:
+            if "DNS" in c2_data[c2_entry] or "dns" in c2_data[c2_entry]:
+                # object_data["url"] = f"dns://{c2_entry}:{c2_data[c2_entry]['port']}"
+                object_data["scheme"] = "dns"
+            else:
+                raise ValueError(f"Unknown scheme for {c2_data}")
 
         object_data["port"] = c2_data[c2_entry]["port"]
 
