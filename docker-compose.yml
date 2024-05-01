@@ -36,6 +36,8 @@ services:
     # mem_limit: "1g"
     # mem_reservation: "128m"
     # cpus: "1.75"
+    #ports:
+    #  - "6379:6379"
     volumes:
       - ./data/redis:/data
     #tmpfs:
