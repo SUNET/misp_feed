@@ -16,31 +16,31 @@
       "ui-priority": 0
     },
     "first-seen": {
-      "description": "First time this URL has been seen",
+      "description": "First time the C2 was verified",
       "disable_correlation": true,
       "misp-attribute": "datetime",
       "ui-priority": 0
     },
     "fragment": {
-      "description": "Fragment identifier is a short string of characters that refers to a resource that is subordinate to another, primary resource.",
+      "description": "Fragment identifier is a short string of characters that refers to a resource that is subordinate to another, primary resource",
       "misp-attribute": "text",
       "multiple": true,
       "ui-priority": 0
     },
     "hostname|port": {
-      "description": "Full hostname and port",
+      "description": "Full hostname and port number",
       "misp-attribute": "hostname|port",
       "multiple": true,
       "ui-priority": 0
     },
     "ip-dst|port": {
-      "description": "Better type when the host is an IP.",
+      "description": "Better type when the host is an IP",
       "misp-attribute": "ip-dst|port",
       "multiple": true,
       "ui-priority": 0
     },
     "last-seen": {
-      "description": "Last time this URL has been seen",
+      "description": "Last time the C2 was verified",
       "disable_correlation": true,
       "misp-attribute": "datetime",
       "ui-priority": 0
@@ -68,14 +68,20 @@
       ],
       "ui-priority": 0
     },
+    "sleeptime": {
+      "description": "Interval the beacon sleeps",
+      "disable_correlation": true,
+      "misp-attribute": "text",
+      "ui-priority": 0
+    },
     "subdomain": {
       "description": "Subdomain",
       "disable_correlation": true,
       "misp-attribute": "text",
       "ui-priority": 0
     },
-    "text": {
-      "description": "Description of the URL ",
+    "metadata": {
+      "description": "C2 beacon metadata",
       "misp-attribute": "text",
       "disable_correlation": true,
       "ui-priority": 0
@@ -85,9 +91,27 @@
       "disable_correlation": true,
       "misp-attribute": "text",
       "ui-priority": 0
+    },
+    "user-agent": {
+      "description": "",
+      "misp-attribute": "text",
+      "disable_correlation": true,
+      "ui-priority": 0
+    },
+    "cs-watermark": {
+      "description": "Cobalt Strike Watermark",
+      "misp-attribute": "text",
+      "disable_correlation": true,
+      "ui-priority": 0
+    },
+    "cs-certificate-fingerprint": {
+      "description": "Certificate sha256 fingerprint",
+      "disable_correlation": true,
+      "misp-attribute": "x509-fingerprint-sha256",
+      "ui-priority": 0
     }
   },
-  "description": "url object describes an url along with its normalized field (like extracted using faup parsing library) and its metadata.",
+  "description": "C2 object for actionable/corralateable attributes and metadata",
   "meta-category": "network",
   "name": "sunet-c2",
   "requiredOneOf": [

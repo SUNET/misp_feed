@@ -24,11 +24,15 @@ async def add_context(c2_entry: Dict[str, Any]) -> str:
 
     context = copy.deepcopy(c2_entry)
 
-    for unwanted_key in ["whois", "geodata"]:
+    for unwanted_key in ["host", "port", "url", "C2_last_confirmed", "ptr", "whois", "geodata"]:
         try:
             del context[unwanted_key]
         except KeyError:
             pass
+
+    # Remove 'SHA256_fingerprint' from nested 'cert_components' dictionary
+    cert_components = context.get('cert', {}).get('cert_components', {})
+    cert_components.pop('SHA256_fingerprint', None)
 
     return json.dumps(context)
 
@@ -98,6 +102,10 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
             if "https://" in c2_data[c2_entry]["url"]:
                 # object_data["url"] = c2_data[c2_entry]["url"]
                 object_data["scheme"] = "https"
+
+                if c2_data[c2_entry]["cert"]["cert_components"]["error"] is False and c2_data[c2_entry]["cert"]["cert_components"]["SHA256_fingerprint"]:
+                    object_data["x509-fingerprint-sha256"] = c2_data[c2_entry]["cert"]["cert_components"]["SHA256_fingerprint"]
+
             elif "http://" in c2_data[c2_entry]["url"]:
                 # object_data["url"] = c2_data[c2_entry]["url"]
                 object_data["scheme"] = "http"
@@ -108,6 +116,14 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
                 object_data["scheme"] = "dns"
             else:
                 raise ValueError(f"Unknown scheme for {c2_data}")
+
+        if "beacon_config" in c2_data[c2_entry] and c2_data[c2_entry]["beacon_config"]:
+            try:
+                object_data["cs-watermark"] = c2_data[c2_entry]["beacon_config"]["Watermark"]
+
+            except KeyError:
+                raise KeyError(f"Missing Key(s) in beacon_config {c2_data}")
+
 
         object_data["port"] = c2_data[c2_entry]["port"]
 
@@ -129,7 +145,7 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
                 continue
 
         # Add context in misp text attribute
-        object_data["text"] = await add_context(c2_data[c2_entry])
+        object_data["metadata"] = await add_context(c2_data[c2_entry])
 
         tags = {
             "text": [
