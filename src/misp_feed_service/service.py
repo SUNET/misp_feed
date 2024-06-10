@@ -104,7 +104,7 @@ async def generate_feed_event(c2_data: Dict[str, Any]) -> None:
                 object_data["scheme"] = "https"
 
                 if c2_data[c2_entry]["cert"]["cert_components"]["error"] is False and c2_data[c2_entry]["cert"]["cert_components"]["SHA256_fingerprint"]:
-                    object_data["x509-fingerprint-sha256"] = c2_data[c2_entry]["cert"]["cert_components"]["SHA256_fingerprint"]
+                    object_data["cs-certificate-fingerprint"] = c2_data[c2_entry]["cert"]["cert_components"]["SHA256_fingerprint"]
 
             elif "http://" in c2_data[c2_entry]["url"]:
                 # object_data["url"] = c2_data[c2_entry]["url"]
