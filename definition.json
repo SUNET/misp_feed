@@ -104,7 +104,7 @@
       "disable_correlation": true,
       "ui-priority": 0
     },
-    "x509-fingerprint-sha256": {
+    "cs-certificate-fingerprint": {
       "description": "Certificate sha256 fingerprint",
       "disable_correlation": true,
       "misp-attribute": "x509-fingerprint-sha256",
