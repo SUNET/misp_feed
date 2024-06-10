@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from pymisp import MISPEvent, MISPOrganisation
 from redis.asyncio.client import Redis
+import redis.exceptions
 
 from . import settings
 
@@ -41,7 +42,11 @@ async def redis_save() -> None:
     """Save redis data to file"""
 
     conn = await redis_connection()
-    ret = await conn.bgsave()
+    try:
+        ret = await conn.bgsave()
+        print(f"bgsave() {ret}")
+    except redis.exceptions.ResponseError as e:
+        print("bgsave(): " + str(e))
     await conn.close()
 
 
